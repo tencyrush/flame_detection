@@ -1,0 +1,37 @@
+clear;  
+clc;  
+close all;  
+  
+train_log_file = 'log2.txt';  
+  
+  
+ [~, pre_output] = dos(['cat ', train_log_file, ' | grep "fire:" | awk ''{print $2}''']); 
+ [~, fire_frame] = dos(['cat ', train_log_file, ' | grep "fire" -A 3 | grep "Objects:"']);  
+ [~, total_frame] = dos(['cat ', train_log_file, ' |grep "Objects:"']);  
+ [~, fps_output] = dos(['cat ', train_log_file, ' | grep "FPS" | awk -F ''[:]{print $2}''']); 
+ 
+precision = str2num(pre_output);
+fps = str2num(fps_output);
+total = length(total_frame)/9;
+fire = length(fire_frame)/9;
+TP = fire/total
+ 
+n = 1:length(precision); 
+t = 1:length(total);
+f = 1:length(fire);
+ 
+idx_n = (n-1);
+idx_total = (t-1);
+idx_fire = (f-1);
+avg_pre = mean(precision)
+avg_fps = mean(fps)
+figure;plot(idx_n, precision);  
+%figure;plot(idx_total, total)
+ 
+ 
+axis([0 500 0 100])
+grid on;  
+legend('confidence');  
+xlabel('frame');  
+ylabel('precision');  
+title(' frame precision');
